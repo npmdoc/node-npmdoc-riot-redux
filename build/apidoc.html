@@ -1,0 +1,160 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+    >riot-redux (v0.3.3)</a>
+</h1>
+<h4>Riot bindings for redux</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.riot-redux">module riot-redux</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.riot-redux.default">
+            function <span class="apidocSignatureSpan">riot-redux.</span>default
+            <span class="apidocSignatureSpan">(store)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.riot-redux" id="apidoc.module.riot-redux">module riot-redux</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.riot-redux.default" id="apidoc.element.riot-redux.default">
+        function <span class="apidocSignatureSpan">riot-redux.</span>default
+        <span class="apidocSignatureSpan">(store)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">default = function (store) {
+	  assert(store, &#x27;&#x22;store&#x22; cannot be null!&#x27;);
+
+	  function subscribe(selector) {
+	    var _this = this;
+
+	    var callback = function callback(state) {
+	      return _this.update(state);
+	    };
+	    var currentState = selector(store.getState());
+
+	    function handleChange() {
+	      var nextState = selector(store.getState());
+	      if (nextState !== currentState) {
+	        currentState = nextState;
+	        callback(currentState);
+
+	        return;
+	      }
+	    }
+
+	    var unsubscribe = store.subscribe(handleChange);
+	    handleChange();
+
+	    return unsubscribe;
+	  }
+
+	  function init() {
+	    var _this2 = this;
+
+	    var _opts = this.opts;
+	    var _opts$actions = _opts.actions;
+	    var actions = _opts$actions === undefined ? {} : _opts$actions;
+	    var _opts$selector = _opts.selector;
+	    var selector = _opts$selector === undefined ? function () {
+	      return {};
+	    } : _opts$selector;
+
+	    var boundActions = (0, _redux.bindActionCreators)(actions, store.dispatch);
+	    var data = selector(store.getState());
+	    assert(data &#x26;&#x26; (typeof data === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(data)) === &#x27;object&#x27;, &#x27;&#x22;selector&#x22; must return an object.
+Please provide a valid selector.\n&#x27; + (&#x27;Selector given: &#x27; + selector + &#x27;\n&#x27;) + (&#x27;Value returned: &#x27; + data));
+
+	    this.store = store;
+	    Object.keys(boundActions).forEach(function (actionName) {
+	      _this2[actionName] = function () {
+	        if (window.Event &#x26;&#x26; window.Event.prototype.isPrototypeOf(arguments[0])) {
+	          arguments[0].preventUpdate = true;
+	        }
+
+	        return boundActions[actionName].apply(boundActions, arguments);
+	      };
+	    });
+	    Object.keys(data).forEach(function (key) {
+	      _this2[key] = data[key];
+	    });
+
+	    var unsubscribe = subscribe.call(this, selector);
+	    this.on(&#x27;unmount&#x27;, unsubscribe);
+	  }
+
+	  return { init: init };
+	}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
